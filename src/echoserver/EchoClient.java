@@ -1,12 +1,14 @@
 package echoserver;
 
+import java.net.*;
+import java.io.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
 public class EchoClient {
-	
+
 	public static final int PORT_NUMBER = 6013;
 
 	public static void main(String[] args) throws IOException {
@@ -33,6 +35,10 @@ public class EchoClient {
 					socketOut.write(data);
 					socketOut.flush();
 				}
+
+				socket.shutdownOutput();
+
+				socket.close();
 			}
 
 			catch (IOException e) {
@@ -49,7 +55,6 @@ public class EchoClient {
 		this.socket = socket;
 		}
 
-
 		public void run() {
 
 			try {
@@ -61,6 +66,10 @@ public class EchoClient {
 					stdOut.write(data);
 					stdOut.flush();
 				}
+
+				socket.shutdownOutput();
+
+				socket.close();
 			}
 
 			catch (IOException e) {

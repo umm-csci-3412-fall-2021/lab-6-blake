@@ -34,6 +34,10 @@ public class EchoServer {
 					socketOut.write(data);
 					socketOut.flush();
 				}
+
+				socket.shutdownOutput();
+
+				socket.close();
 			}
 
 			catch (IOException e) {
