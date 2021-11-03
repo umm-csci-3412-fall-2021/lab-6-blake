@@ -18,22 +18,24 @@ public class EchoClient {
 
 	class InputReader implements Runnable {
 
-		private final Socket socket;
+		Socket socket;
+		OutputStream socketOutputStream ;
 
-		public InputReader(Socket socket){
+		public InputReader(Socket socket, OutputStream socketOutputStream){
 		this.socket = socket;
+		this.socketOutputStream  = socketOutputStream;
 		}
 	
 		public void run() {
 
 			try {
+
 				InputStream stdIn = System.in;
-				OutputStream socketOut = socket.getOutputStream();
 
 				int data;
 				while ((data = stdIn.read()) != -1) {
-					socketOut.write(data);
-					socketOut.flush();
+					socketOutputStream .write(data);
+					socketOutputStream .flush();
 				}
 
 				socket.shutdownOutput();
@@ -49,20 +51,22 @@ public class EchoClient {
 
 	class OutputWriter implements Runnable {
 
-		private final Socket socket;
+		Socket socket;
+		InputStream socketInputStream;
 
-		public OutputWriter(Socket socket){
-		this.socket = socket;
+		public OutputWriter(Socket socket, InputStream socketInputStream){
+			this.socket = socket;
+			this.socketInputStream = socketInputStream;
 		}
 
 		public void run() {
 
 			try {
-				InputStream socketIn = socket.getInputStream();
+
 				OutputStream stdOut = System.out;
 
 				int data;
-				while((data = socketIn.read()) != -1) {
+				while((data = socketInputStream.read()) != -1) {
 					stdOut.write(data);
 					stdOut.flush();
 				}
@@ -83,16 +87,17 @@ public class EchoClient {
 		InputStream socketInputStream = socket.getInputStream();
 		OutputStream socketOutputStream = socket.getOutputStream();
 
-		// Put your code here.
-		while(true) {
+		// Put your code here
 
-			InputReader input = new InputReader(socket);
-			Thread inThread = new Thread(input);
-			inThread.start();
+		InputReader input = new InputReader(socket, socketOutputStream);
+		Thread inThread = new Thread(input);
+		inThread.start();
+		inThread.join();
 
-			OutputWriter output = new OutputWriter(socket);
-			Thread outThread = new Thread(output);
-			outThread.start();
-		}
+		OutputWriter output = new OutputWriter(socket, socketInputStream);
+		Thread outThread = new Thread(output);
+		outThread.start();
+		outThread.join();
+	
 	}
 }

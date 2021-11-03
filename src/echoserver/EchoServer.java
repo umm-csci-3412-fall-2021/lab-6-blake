@@ -17,25 +17,26 @@ public class EchoServer {
 
 	class SocketStream implements Runnable {
 	
-		private final Socket socket;
+		Socket socket;
+		InputStream socketInputStream;
+		OutputStream socketOutputStream;
 	
-		public SocketStream(Socket socket){
-		this.socket = socket;
+		public SocketStream(Socket socket, InputStream socketInputStream, OutputStream socketOutputStream){
+			this.socket = socket;
+			this.socketInputStream = socketInputStream;
+			this.socketOutputStream = socketOutputStream;
+
 		}
 
 		public void run() {
 
 			try {
-				InputStream socketIn = socket.getInputStream();
-				OutputStream socketOut = socket.getOutputStream(); 
 
 				int data;
-				while((data = socketIn.read()) != -1) {
-					socketOut.write(data);
-					socketOut.flush();
+				while((data = socketInputStream.read()) != -1) {
+					socketOutputStream.write(data);
+					socketOutputStream.flush();
 				}
-
-				socket.shutdownOutput();
 
 				socket.close();
 			}
@@ -51,12 +52,16 @@ public class EchoServer {
 		while (true) {
 			Socket socket = serverSocket.accept();
 
+			InputStream socketInputStream = socket.getInputStream();
+			OutputStream socketOutputStream = socket.getOutputStream();
+
 			// Put your code here.
 			// This should do very little, essentially:
-			SocketStream stream = new SocketStream(socket); // * Construct an instance of your runnable class
+			SocketStream stream = new SocketStream(socket, socketInputStream, socketOutputStream); // * Construct an instance of your runnable class
 			Thread thread = new Thread(stream); // * Construct a Thread with your runnable
 			// * Or use a thread pool
 			thread.start(); // * Start that thread
+			thread.join();
 		}
 	}
 }
