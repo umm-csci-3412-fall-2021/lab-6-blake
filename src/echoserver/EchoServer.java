@@ -13,7 +13,7 @@ public class EchoServer {
 	public static void main(String[] args) throws IOException, InterruptedException {
 		EchoServer server = new EchoServer();
 		server.start();
-	}
+	} 
 
 	class SocketStream implements Runnable {
 	
@@ -45,7 +45,7 @@ public class EchoServer {
         	e.printStackTrace();
        		}
 		}
-	} 
+	}
 
 	private void start() throws IOException, InterruptedException {
 		ServerSocket serverSocket = new ServerSocket(PORT_NUMBER);
