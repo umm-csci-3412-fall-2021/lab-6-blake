@@ -16,7 +16,7 @@ public class EchoClient {
 		client.start();
 	}
 
-	class InputReader implements Runnable {
+	public class InputReader implements Runnable {
 
 		Socket socket;
 		OutputStream socketOutputStream ;
@@ -39,8 +39,6 @@ public class EchoClient {
 				}
 
 				socket.shutdownOutput();
-
-				socket.close();
 			}
 
 			catch (IOException e) {
@@ -49,7 +47,7 @@ public class EchoClient {
 		}	
 	}
 
-	class OutputWriter implements Runnable {
+	public class OutputWriter implements Runnable {
 
 		Socket socket;
 		InputStream socketInputStream;
@@ -70,8 +68,6 @@ public class EchoClient {
 					stdOut.write(data);
 					stdOut.flush();
 				}
-
-				socket.shutdownOutput();
 
 				socket.close();
 			}
